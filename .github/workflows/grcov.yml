@@ -1,16 +1,16 @@
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
 
 name: Code coverage with grcov
 
 jobs:
   grcov:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-          - macOS-latest
-          - windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
