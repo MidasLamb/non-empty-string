@@ -4,6 +4,9 @@ version = "0.1.0"
 edition = "2018"
 authors = ["Midas Lambrichts <midaslamb@gmail.com>"]
 license = "MIT OR Apache-2.0"
+description = "A simple type for non empty Strings, similar to NonZeroUsize and friends."
+repository = "https://github.com/MidasLamb/non-empty-string"
+keywords = ["nonemptystring", "string", "str"]
 
 [lib]
 name = "non_empty_string"
