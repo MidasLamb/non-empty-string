@@ -1,0 +1,14 @@
+[package]
+name = "non-empty-string"
+version = "0.1.0"
+edition = "2018"
+authors = ["Midas Lambrichts <midaslamb@gmail.com>"]
+license = "MIT OR Apache-2.0"
+
+[lib]
+name = "non_empty_string"
+
+[dependencies]
+
+[dev-dependencies]
+assert_matches = "1.5.0"
