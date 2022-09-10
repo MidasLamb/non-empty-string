@@ -1,17 +1,23 @@
 [package]
 name = "non-empty-string"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2018"
 authors = ["Midas Lambrichts <midaslamb@gmail.com>"]
 license = "MIT OR Apache-2.0"
 description = "A simple type for non empty Strings, similar to NonZeroUsize and friends."
 repository = "https://github.com/MidasLamb/non-empty-string"
-keywords = ["nonemptystring", "string", "str"]
+keywords = ["nonemptystring", "string", "str", "non-empty", "nonempty"]
 
 [lib]
 name = "non_empty_string"
 
 [dependencies]
+serde = { version = "1", optional = true }
 
 [dev-dependencies]
 assert_matches = "1.5.0"
+serde_json = { version = "1" }
+
+[features]
+default = []
+serde = ["dep:serde"]
