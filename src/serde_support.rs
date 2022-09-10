@@ -1,8 +1,20 @@
 use std::fmt;
 
-use serde::de::{self, Unexpected, Visitor};
+use serde::{
+    de::{self, Unexpected, Visitor},
+    ser::Serialize,
+};
 
 use crate::NonEmptyString;
+
+impl Serialize for NonEmptyString {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.get())
+    }
+}
 
 struct NonEmptyStringVisitor;
 
@@ -47,6 +59,17 @@ mod tests {
     use crate::*;
     use assert_matches::assert_matches;
     use serde_json::json;
+
+    #[test]
+    fn serialize_works() {
+        let value = NonEmptyString("abc".to_owned());
+        let result = serde_json::to_string(&value);
+
+        assert!(result.is_ok());
+
+        let json = serde_json::to_string(&json!("abc")).unwrap();
+        assert_eq!(result.unwrap(), json)
+    }
 
     #[test]
     fn deserialize_works() {
