@@ -27,15 +27,11 @@ impl<'de> de::Deserialize<'de> for NonEmptyString {
     }
 }
 
-pub enum DeserializeError {}
-
-type Result<T, E = DeserializeError> = std::result::Result<T, E>;
-
 impl<'de> Visitor<'de> for NonEmptyStringVisitor {
     type Value = NonEmptyString;
 
     fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        formatter.write_str("an integer between -2^31 and 2^31")
+        formatter.write_str("a string with a length of more than 0")
     }
 
     fn visit_str<E>(self, value: &str) -> Result<Self::Value, E>
@@ -55,13 +51,12 @@ impl<'de> Visitor<'de> for NonEmptyStringVisitor {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use crate::*;
     use assert_matches::assert_matches;
     use serde_json::json;
 
     #[test]
-    fn serialize_works() {
+    fn serialize_non_empty_string_and_normal_string_give_the_same_result() {
         let value = NonEmptyString("abc".to_owned());
         let result = serde_json::to_string(&value);
 
@@ -80,11 +75,40 @@ mod tests {
         assert_matches!(e, Ok(v) if v == expected)
     }
 
+    fn deserialize_x_fails(value: serde_json::Value, expected_error_message: &'static str) {
+        let e: Result<NonEmptyString, _> = serde_json::from_value(value);
+        assert_matches!(e, Err(error) if &error.to_string() == expected_error_message)
+    }
+
     #[test]
     fn deserialize_empty_fails() {
-        let e: Result<NonEmptyString, _> = serde_json::from_value(json!(""));
+        deserialize_x_fails(
+            json!(""),
+            "invalid value: string \"\", expected a string with a length of more than 0",
+        )
+    }
 
-        assert!(e.is_err());
-        // assert_matches!(e, Ok(expected))
+    #[test]
+    fn deserialize_number_fails() {
+        deserialize_x_fails(
+            json!(8),
+            "invalid type: integer `8`, expected a string with a length of more than 0",
+        )
+    }
+
+    #[test]
+    fn deserialize_object_fails() {
+        deserialize_x_fails(
+            json!({}),
+            "invalid type: map, expected a string with a length of more than 0",
+        )
+    }
+
+    #[test]
+    fn deserialize_sequence_fails() {
+        deserialize_x_fails(
+            json!([]),
+            "invalid type: sequence, expected a string with a length of more than 0",
+        )
     }
 }

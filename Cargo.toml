@@ -1,7 +1,7 @@
 [package]
 name = "non-empty-string"
-version = "0.2.0"
-edition = "2018"
+version = "0.2.1"
+edition = "2021"
 authors = ["Midas Lambrichts <midaslamb@gmail.com>"]
 license = "MIT OR Apache-2.0"
 description = "A simple type for non empty Strings, similar to NonZeroUsize and friends."

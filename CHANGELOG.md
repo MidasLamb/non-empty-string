@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+## [0.2.1]
+### Added
+
+### Changed
+* The error message when using `serde` now indicates that the empty string could not be deserialized.
+* Bumped rust edition to `2021`
+
+### Removed
 ## [0.2.0]
 ### Added
 * `serde` support behind the `serde` feature flag.
@@ -22,5 +30,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-[Unreleased]: https://github.com/MidasLamb/non-empty-string/v0.2.0...HEAD
+[Unreleased]: https://github.com/MidasLamb/non-empty-string/v0.2.1...HEAD
+[0.2.1]: https://github.com/MidasLamb/non-empty-string/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/MidasLamb/non-empty-string/compare/v0.1.0...v0.2.0
