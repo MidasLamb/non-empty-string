@@ -6,19 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+* Add & delegate all non-length-reducing methods of `std::string::String` to the inner `String`.
 
 ### Changed
+* README has some more examples and explanations. It is also no longer included in the doc (except for doctests).
 
 ### Removed
 
 ## [0.2.1]
-### Added
-
 ### Changed
 * The error message when using `serde` now indicates that the empty string could not be deserialized.
 * Bumped rust edition to `2021`
 
-### Removed
 ## [0.2.0]
 ### Added
 * `serde` support behind the `serde` feature flag.
@@ -27,8 +26,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 * `new` constructor now returns a `Result` rather than an `Option`, which contains the original string 
-
-### Removed
 
 [Unreleased]: https://github.com/MidasLamb/non-empty-string/v0.2.1...HEAD
 [0.2.1]: https://github.com/MidasLamb/non-empty-string/compare/v0.2.0...v0.2.1

@@ -13,10 +13,12 @@ name = "non_empty_string"
 
 [dependencies]
 serde = { version = "1", optional = true }
+delegate = { version = "0.8" }
 
 [dev-dependencies]
 assert_matches = "1.5.0"
 serde_json = { version = "1" }
+serde = { version = "1", features = ["derive"] }
 
 [features]
 default = []

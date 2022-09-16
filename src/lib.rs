@@ -1,4 +1,16 @@
-#![doc = include_str!("../README.md")]
+#![doc(issue_tracker_base_url = "https://github.com/MidasLamb/non-empty-string/issues/")]
+
+//! # NonEmptyString
+//! A simple wrapper type for `String`s that ensures that the string inside is not `.empty()`, meaning that the length > 0.
+
+// Test the items in the readme file.
+#[cfg(doctest)]
+mod test_readme {
+    #[doc = include_str!("../README.md")]
+    mod something {}
+}
+
+use delegate::delegate;
 
 #[cfg(feature = "serde")]
 mod serde_support;
@@ -9,6 +21,7 @@ mod serde_support;
 #[repr(transparent)]
 pub struct NonEmptyString(String);
 
+#[allow(clippy::len_without_is_empty)] // is_empty would always returns false so it seems a bit silly to have it.
 impl NonEmptyString {
     /// Attempts to create a new NonEmptyString.
     /// If the given `string` is empty, `Err` is returned, containing the original `String`, `Ok` otherwise.
@@ -28,6 +41,77 @@ impl NonEmptyString {
     /// Consume the `NonEmptyString` to get the internal `String` out.
     pub fn into_inner(self) -> String {
         self.0
+    }
+
+    // These are safe methods that can simply be forwarded.
+    delegate! {
+        to self.0 {
+            /// Is forwarded to the inner String.
+            /// See [`std::string::String::into_bytes`]
+            pub fn into_bytes(self) -> Vec<u8>;
+
+            /// Is forwarded to the inner String.
+            /// See [`std::string::String::as_str`]
+            pub fn as_str(&self) -> &str;
+
+            /// Is forwarded to the inner String.
+            /// See [`std::string::String::push_str`]
+            pub fn push_str(&mut self, string: &str);
+
+            /// Is forwarded to the inner String.
+            /// See [`std::string::String::capacity`]
+            pub fn capacity(&self) -> usize;
+
+            /// Is forwarded to the inner String.
+            /// See [`std::string::String::reserve`]
+            pub fn reserve(&mut self, additional: usize);
+
+            /// Is forwarded to the inner String.
+            /// See [`std::string::String::reserve_exact`]
+            pub fn reserve_exact(&mut self, additional: usize);
+
+            // For some reason we cannot delegate the following:
+            // pub fn try_reserve(&mut self, additional: usize) -> Result<(), TryReserveError>
+
+            /// Is forwarded to the inner String.
+            /// See [`std::string::String::try_reserve_exact`]
+            pub fn try_reserve_exact(
+                &mut self,
+                additional: usize
+            ) -> Result<(), std::collections::TryReserveError>;
+
+            /// Is forwarded to the inner String.
+            /// See std::string::String::[`(&`]
+            pub fn shrink_to_fit(&mut self);
+
+            /// Is forwarded to the inner String.
+            /// See [`std::string::String::shrink_to`]
+            pub fn shrink_to(&mut self, min_capacity: usize);
+
+            /// Is forwarded to the inner String.
+            /// See [`std::string::String::push`]
+            pub fn push(&mut self, ch: char);
+
+            /// Is forwarded to the inner String.
+            /// See [`std::string::String::as_bytes`]
+            pub fn as_bytes(&self) -> &[u8];
+
+            /// Is forwarded to the inner String.
+            /// See [`std::string::String::insert`]
+            pub fn insert(&mut self, idx: usize, ch: char);
+
+            /// Is forwarded to the inner String.
+            /// See [`std::string::String::insert_str`]
+            pub fn insert_str(&mut self, idx: usize, string: &str);
+
+            /// Is forwarded to the inner String.
+            /// See [`std::string::String::len`]
+            pub fn len(&self) -> usize;
+
+            /// Is forwarded to the inner String.
+            /// See [`std::string::String::into_boxed_str`]
+            pub fn into_boxed_str(self) -> Box<str>;
+        }
     }
 }
 
@@ -52,6 +136,14 @@ impl<'s> std::convert::TryFrom<&'s str> for NonEmptyString {
         } else {
             Ok(NonEmptyString::new(value.to_owned()).expect("Value is not empty"))
         }
+    }
+}
+
+impl std::convert::TryFrom<String> for NonEmptyString {
+    type Error = String;
+
+    fn try_from(value: String) -> Result<Self, Self::Error> {
+        NonEmptyString::new(value)
     }
 }
 
@@ -98,6 +190,6 @@ mod tests {
     fn calling_string_methods_works() {
         let nes = NonEmptyString::new("string".to_owned()).unwrap();
         // `len` is a `String` method.
-        assert!(nes.get().len() > 0);
+        assert!(nes.len() > 0);
     }
 }
