@@ -6,12 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+
+### Changed
+
+### Removed
+
+## [v0.2.2]
+### Added
 * Add & delegate all non-length-reducing methods of `std::string::String` to the inner `String`.
 
 ### Changed
 * README has some more examples and explanations. It is also no longer included in the doc (except for doctests).
-
-### Removed
 
 ## [0.2.1]
 ### Changed
@@ -27,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 * `new` constructor now returns a `Result` rather than an `Option`, which contains the original string 
 
-[Unreleased]: https://github.com/MidasLamb/non-empty-string/v0.2.1...HEAD
+[Unreleased]: https://github.com/MidasLamb/non-empty-string/v0.2.2...HEAD
+[0.2.1]: https://github.com/MidasLamb/non-empty-string/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/MidasLamb/non-empty-string/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/MidasLamb/non-empty-string/compare/v0.1.0...v0.2.0
