@@ -157,16 +157,15 @@ impl std::fmt::Display for NonEmptyString {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use assert_matches::assert_matches;
 
     #[test]
-    fn empty_string_returns_none() {
+    fn empty_string_returns_err() {
         assert_eq!(NonEmptyString::new("".to_owned()), Err("".to_owned()));
     }
 
     #[test]
-    fn non_empty_string_returns_some() {
-        assert_matches!(NonEmptyString::new("string".to_owned()), Ok(_));
+    fn non_empty_string_returns_ok() {
+        assert!(NonEmptyString::new("string".to_owned()).is_ok())
     }
 
     #[test]
