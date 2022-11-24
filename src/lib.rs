@@ -115,19 +115,19 @@ impl NonEmptyString {
     }
 }
 
-impl std::convert::AsRef<str> for NonEmptyString {
+impl AsRef<str> for NonEmptyString {
     fn as_ref(&self) -> &str {
         &self.0
     }
 }
 
-impl std::convert::AsRef<String> for NonEmptyString {
+impl AsRef<String> for NonEmptyString {
     fn as_ref(&self) -> &String {
         &self.0
     }
 }
 
-impl<'s> std::convert::TryFrom<&'s str> for NonEmptyString {
+impl<'s> TryFrom<&'s str> for NonEmptyString {
     type Error = ();
 
     fn try_from(value: &'s str) -> Result<Self, Self::Error> {
@@ -139,7 +139,7 @@ impl<'s> std::convert::TryFrom<&'s str> for NonEmptyString {
     }
 }
 
-impl std::convert::TryFrom<String> for NonEmptyString {
+impl TryFrom<String> for NonEmptyString {
     type Error = String;
 
     fn try_from(value: String) -> Result<Self, Self::Error> {
@@ -152,7 +152,6 @@ impl std::fmt::Display for NonEmptyString {
         write!(f, "{}", self.0)
     }
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -198,13 +197,12 @@ mod tests {
         // `len` is a `String` method.
         assert!(nes.len() > 0);
     }
-    
+
     #[test]
     fn format_test() {
         let str = NonEmptyString::new("string".to_owned()).unwrap();
         println!("{}", &str);
-        
+
         let _str: String = str.to_string();
     }
-    
 }
