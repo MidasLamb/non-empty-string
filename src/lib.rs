@@ -128,14 +128,14 @@ impl AsRef<String> for NonEmptyString {
 }
 
 impl<'s> TryFrom<&'s str> for NonEmptyString {
-    type Error = ();
+    type Error = &'s str;
 
     fn try_from(value: &'s str) -> Result<Self, Self::Error> {
         if value.is_empty() {
-            Err(())
-        } else {
-            Ok(NonEmptyString::new(value.to_owned()).expect("Value is not empty"))
+            return Err(value);
         }
+            
+        Ok(NonEmptyString(value.to_owned()))
     }
 }
 
