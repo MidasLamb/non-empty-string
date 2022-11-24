@@ -147,6 +147,13 @@ impl std::convert::TryFrom<String> for NonEmptyString {
     }
 }
 
+impl std::fmt::Display for NonEmptyString {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
+
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -192,4 +199,13 @@ mod tests {
         // `len` is a `String` method.
         assert!(nes.len() > 0);
     }
+    
+    #[test]
+    fn format_test() {
+        let str = NonEmptyString::new("string".to_owned()).unwrap();
+        println!("{}", &str);
+        
+        let _str: String = str.to_string();
+    }
+    
 }
