@@ -10,6 +10,7 @@ mod test_readme {
     mod something {}
 }
 
+use std::fmt::Display;
 use delegate::delegate;
 
 #[cfg(feature = "serde")]
@@ -147,9 +148,9 @@ impl TryFrom<String> for NonEmptyString {
     }
 }
 
-impl std::fmt::Display for NonEmptyString {
+impl Display for NonEmptyString {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.0)
+        Display::fmt(&self.0, f)
     }
 }
 
@@ -202,7 +203,6 @@ mod tests {
     fn format_test() {
         let str = NonEmptyString::new("string".to_owned()).unwrap();
         println!("{}", &str);
-
-        let _str: String = str.to_string();
+        assert_eq!(String::from("string"), str.to_string())
     }
 }
