@@ -1,38 +1,56 @@
 # Changelog
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
 ### Added
 
 ### Changed
 
 ### Removed
 
-## [0.2.2]
+## [0.2.3]
+
 ### Added
-* Add & delegate all non-length-reducing methods of `std::string::String` to the inner `String`.
+
+- Add `Display` implementation ([#8](https://github.com/MidasLamb/non-empty-string/pull/8), thanks to [@jonhteper](https://github.com/jonhteper))
+- Align errors in `TryFrom` implementations ([#8](https://github.com/MidasLamb/non-empty-string/pull/8), thanks to [@jonhteper](https://github.com/jonhteper))
+
+## [0.2.2]
+
+### Added
+
+- Add & delegate all non-length-reducing methods of `std::string::String` to the inner `String`.
 
 ### Changed
-* README has some more examples and explanations. It is also no longer included in the doc (except for doctests).
+
+- README has some more examples and explanations. It is also no longer included in the doc (except for doctests).
 
 ## [0.2.1]
+
 ### Changed
-* The error message when using `serde` now indicates that the empty string could not be deserialized.
-* Bumped rust edition to `2021`
+
+- The error message when using `serde` now indicates that the empty string could not be deserialized.
+- Bumped rust edition to `2021`
 
 ## [0.2.0]
+
 ### Added
-* `serde` support behind the `serde` feature flag.
-* `Eq, PartialEq, Ord, PartialOrd` are now implemented for `NonEmptyString`.
-* `get` to retrieve a reference to the inner value.
+
+- `serde` support behind the `serde` feature flag.
+- `Eq, PartialEq, Ord, PartialOrd` are now implemented for `NonEmptyString`.
+- `get` to retrieve a reference to the inner value.
 
 ### Changed
-* `new` constructor now returns a `Result` rather than an `Option`, which contains the original string 
 
-[Unreleased]: https://github.com/MidasLamb/non-empty-string/v0.2.2...HEAD
+- `new` constructor now returns a `Result` rather than an `Option`, which contains the original string
+
+[unreleased]: https://github.com/MidasLamb/non-empty-string/compare/v0.2.3...HEAD
+[0.2.3]: https://github.com/MidasLamb/non-empty-string/compare/v0.2.2...v0.2.3
 [0.2.2]: https://github.com/MidasLamb/non-empty-string/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/MidasLamb/non-empty-string/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/MidasLamb/non-empty-string/compare/v0.1.0...v0.2.0

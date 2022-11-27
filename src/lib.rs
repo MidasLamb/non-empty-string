@@ -10,8 +10,8 @@ mod test_readme {
     mod something {}
 }
 
-use std::fmt::Display;
 use delegate::delegate;
+use std::fmt::Display;
 
 #[cfg(feature = "serde")]
 mod serde_support;
@@ -135,7 +135,7 @@ impl<'s> TryFrom<&'s str> for NonEmptyString {
         if value.is_empty() {
             return Err(value);
         }
-            
+
         Ok(NonEmptyString(value.to_owned()))
     }
 }
