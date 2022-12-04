@@ -37,10 +37,10 @@ impl NonEmptyString {
     /// If the given `string` is empty, `Err` is returned, `Ok` otherwise.
     pub fn new(string: String) -> Result<NonEmptyString, ErrorEmptyString> {
         if string.is_empty() {
-            Err(ErrorEmptyString)
-        } else {
-            Ok(NonEmptyString(string))
+            return Err(ErrorEmptyString);
         }
+
+        Ok(NonEmptyString(string))
     }
 
     /// Returns a reference to the contained value.
