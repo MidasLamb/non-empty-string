@@ -45,7 +45,8 @@ impl<'de> Visitor<'de> for NonEmptyStringVisitor {
     where
         E: de::Error,
     {
-        NonEmptyString::new(value).map_err(|e| de::Error::invalid_value(Unexpected::Str(&e), &self))
+        NonEmptyString::new(value)
+            .map_err(|_e| de::Error::invalid_value(Unexpected::Str(""), &self))
     }
 }
 

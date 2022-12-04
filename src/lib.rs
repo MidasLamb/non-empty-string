@@ -16,6 +16,15 @@ use std::fmt::Display;
 #[cfg(feature = "serde")]
 mod serde_support;
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ErrorEmptyString;
+
+impl Display for ErrorEmptyString {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        Display::fmt(&self, f)
+    }
+}
+
 /// A simple String wrapper type, similar to NonZeroUsize and friends.
 /// Guarantees that the String contained inside is not of length 0.
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -25,10 +34,10 @@ pub struct NonEmptyString(String);
 #[allow(clippy::len_without_is_empty)] // is_empty would always returns false so it seems a bit silly to have it.
 impl NonEmptyString {
     /// Attempts to create a new NonEmptyString.
-    /// If the given `string` is empty, `Err` is returned, containing the original `String`, `Ok` otherwise.
-    pub fn new(string: String) -> Result<NonEmptyString, String> {
+    /// If the given `string` is empty, `Err` is returned, `Ok` otherwise.
+    pub fn new(string: String) -> Result<NonEmptyString, ErrorEmptyString> {
         if string.is_empty() {
-            Err(string)
+            Err(ErrorEmptyString)
         } else {
             Ok(NonEmptyString(string))
         }
@@ -129,11 +138,11 @@ impl AsRef<String> for NonEmptyString {
 }
 
 impl<'s> TryFrom<&'s str> for NonEmptyString {
-    type Error = &'s str;
+    type Error = ErrorEmptyString;
 
     fn try_from(value: &'s str) -> Result<Self, Self::Error> {
         if value.is_empty() {
-            return Err(value);
+            return Err(ErrorEmptyString);
         }
 
         Ok(NonEmptyString(value.to_owned()))
@@ -141,7 +150,7 @@ impl<'s> TryFrom<&'s str> for NonEmptyString {
 }
 
 impl TryFrom<String> for NonEmptyString {
-    type Error = String;
+    type Error = ErrorEmptyString;
 
     fn try_from(value: String) -> Result<Self, Self::Error> {
         NonEmptyString::new(value)
@@ -160,7 +169,7 @@ mod tests {
 
     #[test]
     fn empty_string_returns_err() {
-        assert_eq!(NonEmptyString::new("".to_owned()), Err("".to_owned()));
+        assert_eq!(NonEmptyString::new("".to_owned()), Err(ErrorEmptyString));
     }
 
     #[test]
