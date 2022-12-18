@@ -8,7 +8,7 @@ A simple wrapper type for `String`s that ensures that the string inside is not `
 ## Example
 
 ```rust
-use non_empty_string::{NonEmptyString, ErrorEmptyString};
+use non_empty_string::NonEmptyString;
 
 // Constructing it from a normal (non-zero-length) String works fine.
 let s = "A string with a length".to_owned();
@@ -18,7 +18,6 @@ assert!(NonEmptyString::new(s).is_ok());
 let empty = "".to_owned();
 let result = NonEmptyString::new(empty);
 assert!(result.is_err());
-assert_eq!(result.unwrap_err(), ErrorEmptyString);
 
 ```
 

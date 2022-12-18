@@ -16,14 +16,19 @@ use std::fmt::Display;
 #[cfg(feature = "serde")]
 mod serde_support;
 
+#[cfg(feature = "use_error")]
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ErrorEmptyString;
 
+#[cfg(feature = "use_error")]
 impl Display for ErrorEmptyString {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         Display::fmt(&self, f)
     }
 }
+
+#[cfg(feature = "use_error")]
+impl std::error::Error for ErrorEmptyString {}
 
 /// A simple String wrapper type, similar to NonZeroUsize and friends.
 /// Guarantees that the String contained inside is not of length 0.
@@ -33,6 +38,18 @@ pub struct NonEmptyString(String);
 
 #[allow(clippy::len_without_is_empty)] // is_empty would always returns false so it seems a bit silly to have it.
 impl NonEmptyString {
+    #[cfg(not(feature = "use_error"))]
+    // Attempts to create a new NonEmptyString.
+    /// If the given `string` is empty, `Err` is returned, containing the original `String`, `Ok` otherwise.
+    pub fn new(string: String) -> Result<NonEmptyString, String> {
+        if string.is_empty() {
+            return Err(string);
+        }
+
+        Ok(NonEmptyString(string))
+    }
+
+    #[cfg(feature = "use_error")]
     /// Attempts to create a new NonEmptyString.
     /// If the given `string` is empty, `Err` is returned, `Ok` otherwise.
     pub fn new(string: String) -> Result<NonEmptyString, ErrorEmptyString> {
@@ -137,6 +154,29 @@ impl AsRef<String> for NonEmptyString {
     }
 }
 
+#[cfg(not(feature = "use_error"))]
+impl<'s> TryFrom<&'s str> for NonEmptyString {
+    type Error = &'s str;
+
+    fn try_from(value: &'s str) -> Result<Self, Self::Error> {
+        if value.is_empty() {
+            return Err(value);
+        }
+
+        Ok(NonEmptyString(value.to_owned()))
+    }
+}
+
+#[cfg(not(feature = "use_error"))]
+impl TryFrom<String> for NonEmptyString {
+    type Error = String;
+
+    fn try_from(value: String) -> Result<Self, Self::Error> {
+        NonEmptyString::new(value)
+    }
+}
+
+#[cfg(feature = "use_error")]
 impl<'s> TryFrom<&'s str> for NonEmptyString {
     type Error = ErrorEmptyString;
 
@@ -149,6 +189,7 @@ impl<'s> TryFrom<&'s str> for NonEmptyString {
     }
 }
 
+#[cfg(feature = "use_error")]
 impl TryFrom<String> for NonEmptyString {
     type Error = ErrorEmptyString;
 
@@ -168,11 +209,25 @@ mod tests {
     use super::*;
 
     #[test]
+    #[cfg(not(feature = "use_error"))]
+    fn empty_string_returns_err() {
+        assert_eq!(NonEmptyString::new("".to_owned()), Err("".to_owned()));
+    }
+
+    #[test]
+    #[cfg(not(feature = "use_error"))]
+    fn non_empty_string_returns_ok() {
+        assert!(NonEmptyString::new("string".to_owned()).is_ok())
+    }
+
+    #[test]
+    #[cfg(feature = "use_error")]
     fn empty_string_returns_err() {
         assert_eq!(NonEmptyString::new("".to_owned()), Err(ErrorEmptyString));
     }
 
     #[test]
+    #[cfg(feature = "use_error")]
     fn non_empty_string_returns_ok() {
         assert!(NonEmptyString::new("string".to_owned()).is_ok())
     }
