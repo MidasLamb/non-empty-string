@@ -49,34 +49,34 @@ impl NonEmptyString {
     delegate! {
         to self.0 {
             /// Is forwarded to the inner String.
-            /// See [`std::string::String::into_bytes`]
+            /// See [`String::into_bytes`]
             pub fn into_bytes(self) -> Vec<u8>;
 
             /// Is forwarded to the inner String.
-            /// See [`std::string::String::as_str`]
+            /// See [`String::as_str`]
             pub fn as_str(&self) -> &str;
 
             /// Is forwarded to the inner String.
-            /// See [`std::string::String::push_str`]
+            /// See [`String::push_str`]
             pub fn push_str(&mut self, string: &str);
 
             /// Is forwarded to the inner String.
-            /// See [`std::string::String::capacity`]
+            /// See [`String::capacity`]
             pub fn capacity(&self) -> usize;
 
             /// Is forwarded to the inner String.
-            /// See [`std::string::String::reserve`]
+            /// See [`String::reserve`]
             pub fn reserve(&mut self, additional: usize);
 
             /// Is forwarded to the inner String.
-            /// See [`std::string::String::reserve_exact`]
+            /// See [`String::reserve_exact`]
             pub fn reserve_exact(&mut self, additional: usize);
 
             // For some reason we cannot delegate the following:
             // pub fn try_reserve(&mut self, additional: usize) -> Result<(), TryReserveError>
 
             /// Is forwarded to the inner String.
-            /// See [`std::string::String::try_reserve_exact`]
+            /// See [`String::try_reserve_exact`]
             pub fn try_reserve_exact(
                 &mut self,
                 additional: usize
@@ -87,31 +87,31 @@ impl NonEmptyString {
             pub fn shrink_to_fit(&mut self);
 
             /// Is forwarded to the inner String.
-            /// See [`std::string::String::shrink_to`]
+            /// See [`String::shrink_to`]
             pub fn shrink_to(&mut self, min_capacity: usize);
 
             /// Is forwarded to the inner String.
-            /// See [`std::string::String::push`]
+            /// See [`String::push`]
             pub fn push(&mut self, ch: char);
 
             /// Is forwarded to the inner String.
-            /// See [`std::string::String::as_bytes`]
+            /// See [`String::as_bytes`]
             pub fn as_bytes(&self) -> &[u8];
 
             /// Is forwarded to the inner String.
-            /// See [`std::string::String::insert`]
+            /// See [`String::insert`]
             pub fn insert(&mut self, idx: usize, ch: char);
 
             /// Is forwarded to the inner String.
-            /// See [`std::string::String::insert_str`]
+            /// See [`String::insert_str`]
             pub fn insert_str(&mut self, idx: usize, string: &str);
 
             /// Is forwarded to the inner String.
-            /// See [`std::string::String::len`]
+            /// See [`String::len`]
             pub fn len(&self) -> usize;
 
             /// Is forwarded to the inner String.
-            /// See [`std::string::String::into_boxed_str`]
+            /// See [`String::into_boxed_str`]
             pub fn into_boxed_str(self) -> Box<str>;
         }
     }
