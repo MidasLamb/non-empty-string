@@ -12,6 +12,7 @@ mod test_readme {
 
 use delegate::delegate;
 use std::fmt::Display;
+use std::ops::Deref;
 
 #[cfg(feature = "serde")]
 mod serde_support;
@@ -128,6 +129,14 @@ impl AsRef<String> for NonEmptyString {
     }
 }
 
+impl Deref for NonEmptyString {
+    type Target = str;
+
+    fn deref(&self) -> &Self::Target {
+        self.0.deref()
+    }
+}
+
 impl<'s> TryFrom<&'s str> for NonEmptyString {
     type Error = &'s str;
 
@@ -204,5 +213,18 @@ mod tests {
         let str = NonEmptyString::new("string".to_owned()).unwrap();
         println!("{}", &str);
         assert_eq!(String::from("string"), str.to_string())
+    }
+
+
+    fn print_str(str: &str) {
+        println!("{str}")
+    }
+
+    #[test]
+    fn deref_works() {
+        let str = "My String";
+        let non_empty_string = NonEmptyString::try_from(str).unwrap();
+        print_str(&non_empty_string);
+        assert_eq!(str, non_empty_string.deref());
     }
 }
