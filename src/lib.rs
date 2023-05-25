@@ -168,6 +168,12 @@ impl FromStr for NonEmptyString {
     }
 }
 
+impl From<NonEmptyString> for String {
+    fn from(value: NonEmptyString) -> Self {
+        value.0
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -222,14 +228,21 @@ mod tests {
 
     #[test]
     fn from_str_works() {
-        let empty_str = "";
         let valid_str = "string";
 
-        let _non_empty_string =
-            NonEmptyString::from_str(empty_str).expect_err("operation must be failed");
+        let _non_empty_string = NonEmptyString::from_str("").expect_err("operation must be failed");
 
         let non_empty_string = NonEmptyString::from_str(valid_str).unwrap();
         assert_eq!(non_empty_string.as_str(), valid_str);
         assert_eq!(non_empty_string, valid_str.parse().unwrap());
+    }
+
+    #[test]
+    fn into_works() {
+        let non_empty_string = NonEmptyString::new("string".to_string()).unwrap();
+        let _string: String = non_empty_string.into();
+
+        let non_empty_string = NonEmptyString::new("string".to_string()).unwrap();
+        let _string = String::from(non_empty_string);
     }
 }
