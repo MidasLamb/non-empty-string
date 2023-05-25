@@ -130,7 +130,6 @@ impl AsRef<String> for NonEmptyString {
     }
 }
 
-
 impl<'s> TryFrom<&'s str> for NonEmptyString {
     type Error = &'s str;
 
@@ -158,10 +157,10 @@ impl Display for NonEmptyString {
 }
 
 impl FromStr for NonEmptyString {
-    type Err= EmptyString;
+    type Err = EmptyString;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        if s.is_empty(){
+        if s.is_empty() {
             return Err(EmptyString);
         }
 
@@ -226,11 +225,11 @@ mod tests {
         let empty_str = "";
         let valid_str = "string";
 
-        let _non_empty_string = NonEmptyString::from_str(empty_str)
-            .expect_err("operation must be failed");
+        let _non_empty_string =
+            NonEmptyString::from_str(empty_str).expect_err("operation must be failed");
 
         let non_empty_string = NonEmptyString::from_str(valid_str).unwrap();
         assert_eq!(non_empty_string.as_str(), valid_str);
+        assert_eq!(non_empty_string, valid_str.parse().unwrap());
     }
-
 }
