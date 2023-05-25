@@ -11,9 +11,10 @@ mod test_readme {
 }
 
 use delegate::delegate;
-use std::fmt::Display;
-use std::ops::Deref;
+use error::EmptyString;
+use std::{fmt::Display, str::FromStr};
 
+mod error;
 #[cfg(feature = "serde")]
 mod serde_support;
 
@@ -129,13 +130,6 @@ impl AsRef<String> for NonEmptyString {
     }
 }
 
-impl Deref for NonEmptyString {
-    type Target = str;
-
-    fn deref(&self) -> &Self::Target {
-        self.0.deref()
-    }
-}
 
 impl<'s> TryFrom<&'s str> for NonEmptyString {
     type Error = &'s str;
@@ -160,6 +154,18 @@ impl TryFrom<String> for NonEmptyString {
 impl Display for NonEmptyString {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         Display::fmt(&self.0, f)
+    }
+}
+
+impl FromStr for NonEmptyString {
+    type Err= EmptyString;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        if s.is_empty(){
+            return Err(EmptyString);
+        }
+
+        Ok(Self(s.to_string()))
     }
 }
 
@@ -215,16 +221,16 @@ mod tests {
         assert_eq!(String::from("string"), str.to_string())
     }
 
-
-    fn print_str(str: &str) {
-        println!("{str}")
-    }
-
     #[test]
-    fn deref_works() {
-        let str = "My String";
-        let non_empty_string = NonEmptyString::try_from(str).unwrap();
-        print_str(&non_empty_string);
-        assert_eq!(str, non_empty_string.deref());
+    fn from_str_works() {
+        let empty_str = "";
+        let valid_str = "string";
+
+        let _non_empty_string = NonEmptyString::from_str(empty_str)
+            .expect_err("operation must be failed");
+
+        let non_empty_string = NonEmptyString::from_str(valid_str).unwrap();
+        assert_eq!(non_empty_string.as_str(), valid_str);
     }
+
 }
