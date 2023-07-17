@@ -9,14 +9,15 @@ mod test_readme {
     #[doc = include_str!("../README.md")]
     mod something {}
 }
-
-use delegate::delegate;
-use error::EmptyString;
-use std::{fmt::Display, str::FromStr};
-
 mod error;
 #[cfg(feature = "serde")]
 mod serde_support;
+
+use delegate::delegate;
+pub use error::EmptyString;
+use std::{fmt::Display, str::FromStr};
+
+
 
 /// A simple String wrapper type, similar to NonZeroUsize and friends.
 /// Guarantees that the String contained inside is not of length 0.
