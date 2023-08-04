@@ -17,11 +17,9 @@ use delegate::delegate;
 pub use error::EmptyString;
 use std::{fmt::Display, str::FromStr};
 
-
-
 /// A simple String wrapper type, similar to NonZeroUsize and friends.
 /// Guarantees that the String contained inside is not of length 0.
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[repr(transparent)]
 pub struct NonEmptyString(String);
 
@@ -177,6 +175,9 @@ impl From<NonEmptyString> for String {
 
 #[cfg(test)]
 mod tests {
+    use std::collections::HashMap;
+    use std::collections::HashSet;
+
     use super::*;
 
     #[test]
@@ -245,5 +246,20 @@ mod tests {
 
         let non_empty_string = NonEmptyString::new("string".to_string()).unwrap();
         let _string = String::from(non_empty_string);
+    }
+
+    #[test]
+    fn hash_works() {
+        let mut map = HashMap::new();
+        map.insert(NonEmptyString::from_str("id.1").unwrap(), 1);
+        map.insert(NonEmptyString::from_str("id.2").unwrap(), 2);
+
+        assert_eq!(map.len(), 2);
+
+        let mut set = HashSet::new();
+        set.insert(NonEmptyString::from_str("1").unwrap());
+        set.insert(NonEmptyString::from_str("2").unwrap());
+
+        assert_eq!(set.len(), 2);
     }
 }
