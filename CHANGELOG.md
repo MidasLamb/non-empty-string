@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- More traits from `String` implemented on `NonEmptyString`
+  - Index
+  - Add
+  - AddAssign
+  - Extend
+  - Write
+  - PartialEq with `str` & `String`
+
 ### Changed
 
 ### Removed

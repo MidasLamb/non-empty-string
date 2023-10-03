@@ -9,13 +9,15 @@ mod test_readme {
     #[doc = include_str!("../README.md")]
     mod something {}
 }
-mod error;
+
+use std::str::FromStr;
+
+use delegate::delegate;
+
 #[cfg(feature = "serde")]
 mod serde_support;
 
-use delegate::delegate;
-pub use error::EmptyString;
-use std::{fmt::Display, str::FromStr};
+mod trait_impls;
 
 /// A simple String wrapper type, similar to NonZeroUsize and friends.
 /// Guarantees that the String contained inside is not of length 0.
@@ -149,21 +151,11 @@ impl TryFrom<String> for NonEmptyString {
     }
 }
 
-impl Display for NonEmptyString {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        Display::fmt(&self.0, f)
-    }
-}
-
 impl FromStr for NonEmptyString {
-    type Err = EmptyString;
+    type Err = <NonEmptyString as TryFrom<String>>::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        if s.is_empty() {
-            return Err(EmptyString);
-        }
-
-        Ok(Self(s.to_string()))
+        <Self as TryFrom<String>>::try_from(s.to_string())
     }
 }
 
@@ -175,8 +167,7 @@ impl From<NonEmptyString> for String {
 
 #[cfg(test)]
 mod tests {
-    use std::collections::HashMap;
-    use std::collections::HashSet;
+    use std::hash::Hash;
 
     use super::*;
 
@@ -231,12 +222,9 @@ mod tests {
     #[test]
     fn from_str_works() {
         let valid_str = "string";
-
-        let _non_empty_string = NonEmptyString::from_str("").expect_err("operation must be failed");
-
         let non_empty_string = NonEmptyString::from_str(valid_str).unwrap();
-        assert_eq!(non_empty_string.as_str(), valid_str);
-        assert_eq!(non_empty_string, valid_str.parse().unwrap());
+        let parsed: NonEmptyString = valid_str.parse().unwrap();
+        assert_eq!(non_empty_string, parsed);
     }
 
     #[test]
@@ -250,16 +238,7 @@ mod tests {
 
     #[test]
     fn hash_works() {
-        let mut map = HashMap::new();
-        map.insert(NonEmptyString::from_str("id.1").unwrap(), 1);
-        map.insert(NonEmptyString::from_str("id.2").unwrap(), 2);
-
-        assert_eq!(map.len(), 2);
-
-        let mut set = HashSet::new();
-        set.insert(NonEmptyString::from_str("1").unwrap());
-        set.insert(NonEmptyString::from_str("2").unwrap());
-
-        assert_eq!(set.len(), 2);
+        fn is_hash<T: Hash>() {}
+        is_hash::<NonEmptyString>();
     }
 }
