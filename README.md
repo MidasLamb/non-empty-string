@@ -23,15 +23,33 @@ assert_eq!(result.unwrap_err(), "".to_owned())
 ```
 
 ## Methods of std::string::String
+
 `NonEmptyString` implements a subset of the functions of `std::string::String`, only the ones which are guaranteed to leave the `NonEmptyString` in a valid state.
 This means i.e. `push()` is implemented, but `pop()` is not.
 
 This allows you to mostly treat it as a String without having to constantly turn it into the inner `String` before you can do any sort of operation on it and then having to reconstruct a `NonEmptyString` afterwards.
 
+If a method is missing that you think upholds the invariant of `NonEmptyString`, don't hesitate to [open an issue].
+
+## Traits
+
+`NonEmptyString` implements quite a few of the traits that `String` implements, where it simply forwards it to the underlying string,
+which allows e.g. indexing with ranges:
+
+```rust
+use non_empty_string::NonEmptyString;
+
+let non_empty = NonEmptyString::new("ABC".to_owned()).unwrap();
+assert_eq!(&non_empty[1..], "BC");
+
+```
+
+If a trait is missing that you think upholds the invariant of `NonEmptyString`, don't hesitate to [open an issue].
 
 ## Serde Support
 
 [serde] support is available behind the `serde` feature flag:
+
 ```toml
 [dependencies]
 serde = { version = "1", features = ["derive"] }
@@ -39,7 +57,8 @@ non-empty-string = { version = "*", features = ["serde"]}
 ```
 
 Afterwards you can use it in a struct:
-```rust
+
+```ignore
 use serde::{Serialize, Deserialize};
 use non_empty_string::NonEmptyString;
 
@@ -55,10 +74,10 @@ Deserialization will fail if the field is present as a String, but the length of
 
 Licensed under either of
 
- * Apache License, Version 2.0
-   ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
- * MIT license
-   ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+- Apache License, Version 2.0
+  ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
+- MIT license
+  ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
 
 at your option.
 
@@ -69,3 +88,4 @@ for inclusion in the work by you, as defined in the Apache-2.0 license, shall be
 dual licensed as above, without any additional terms or conditions.
 
 [serde]: https://docs.rs/serde
+[open an issue]: https://github.com/MidasLamb/non-empty-string/issues

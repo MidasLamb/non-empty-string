@@ -8,6 +8,9 @@ description = "A simple type for non empty Strings, similar to NonZeroUsize and 
 repository = "https://github.com/MidasLamb/non-empty-string"
 keywords = ["nonemptystring", "string", "str", "non-empty", "nonempty"]
 
+[package.metadata."docs.rs"]
+all-features = true
+
 [lib]
 name = "non_empty_string"
 
