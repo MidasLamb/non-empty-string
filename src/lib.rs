@@ -9,16 +9,17 @@ mod test_readme {
     #[doc = include_str!("../README.md")]
     mod something {}
 }
-
-use delegate::delegate;
-use std::fmt::Display;
-
+mod error;
 #[cfg(feature = "serde")]
 mod serde_support;
 
+use delegate::delegate;
+pub use error::EmptyString;
+use std::{fmt::Display, str::FromStr};
+
 /// A simple String wrapper type, similar to NonZeroUsize and friends.
 /// Guarantees that the String contained inside is not of length 0.
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[repr(transparent)]
 pub struct NonEmptyString(String);
 
@@ -48,34 +49,34 @@ impl NonEmptyString {
     delegate! {
         to self.0 {
             /// Is forwarded to the inner String.
-            /// See [`std::string::String::into_bytes`]
+            /// See [`String::into_bytes`]
             pub fn into_bytes(self) -> Vec<u8>;
 
             /// Is forwarded to the inner String.
-            /// See [`std::string::String::as_str`]
+            /// See [`String::as_str`]
             pub fn as_str(&self) -> &str;
 
             /// Is forwarded to the inner String.
-            /// See [`std::string::String::push_str`]
+            /// See [`String::push_str`]
             pub fn push_str(&mut self, string: &str);
 
             /// Is forwarded to the inner String.
-            /// See [`std::string::String::capacity`]
+            /// See [`String::capacity`]
             pub fn capacity(&self) -> usize;
 
             /// Is forwarded to the inner String.
-            /// See [`std::string::String::reserve`]
+            /// See [`String::reserve`]
             pub fn reserve(&mut self, additional: usize);
 
             /// Is forwarded to the inner String.
-            /// See [`std::string::String::reserve_exact`]
+            /// See [`String::reserve_exact`]
             pub fn reserve_exact(&mut self, additional: usize);
 
             // For some reason we cannot delegate the following:
             // pub fn try_reserve(&mut self, additional: usize) -> Result<(), TryReserveError>
 
             /// Is forwarded to the inner String.
-            /// See [`std::string::String::try_reserve_exact`]
+            /// See [`String::try_reserve_exact`]
             pub fn try_reserve_exact(
                 &mut self,
                 additional: usize
@@ -86,31 +87,31 @@ impl NonEmptyString {
             pub fn shrink_to_fit(&mut self);
 
             /// Is forwarded to the inner String.
-            /// See [`std::string::String::shrink_to`]
+            /// See [`String::shrink_to`]
             pub fn shrink_to(&mut self, min_capacity: usize);
 
             /// Is forwarded to the inner String.
-            /// See [`std::string::String::push`]
+            /// See [`String::push`]
             pub fn push(&mut self, ch: char);
 
             /// Is forwarded to the inner String.
-            /// See [`std::string::String::as_bytes`]
+            /// See [`String::as_bytes`]
             pub fn as_bytes(&self) -> &[u8];
 
             /// Is forwarded to the inner String.
-            /// See [`std::string::String::insert`]
+            /// See [`String::insert`]
             pub fn insert(&mut self, idx: usize, ch: char);
 
             /// Is forwarded to the inner String.
-            /// See [`std::string::String::insert_str`]
+            /// See [`String::insert_str`]
             pub fn insert_str(&mut self, idx: usize, string: &str);
 
             /// Is forwarded to the inner String.
-            /// See [`std::string::String::len`]
+            /// See [`String::len`]
             pub fn len(&self) -> usize;
 
             /// Is forwarded to the inner String.
-            /// See [`std::string::String::into_boxed_str`]
+            /// See [`String::into_boxed_str`]
             pub fn into_boxed_str(self) -> Box<str>;
         }
     }
@@ -154,8 +155,29 @@ impl Display for NonEmptyString {
     }
 }
 
+impl FromStr for NonEmptyString {
+    type Err = EmptyString;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        if s.is_empty() {
+            return Err(EmptyString);
+        }
+
+        Ok(Self(s.to_string()))
+    }
+}
+
+impl From<NonEmptyString> for String {
+    fn from(value: NonEmptyString) -> Self {
+        value.0
+    }
+}
+
 #[cfg(test)]
 mod tests {
+    use std::collections::HashMap;
+    use std::collections::HashSet;
+
     use super::*;
 
     #[test]
@@ -204,5 +226,40 @@ mod tests {
         let str = NonEmptyString::new("string".to_owned()).unwrap();
         println!("{}", &str);
         assert_eq!(String::from("string"), str.to_string())
+    }
+
+    #[test]
+    fn from_str_works() {
+        let valid_str = "string";
+
+        let _non_empty_string = NonEmptyString::from_str("").expect_err("operation must be failed");
+
+        let non_empty_string = NonEmptyString::from_str(valid_str).unwrap();
+        assert_eq!(non_empty_string.as_str(), valid_str);
+        assert_eq!(non_empty_string, valid_str.parse().unwrap());
+    }
+
+    #[test]
+    fn into_works() {
+        let non_empty_string = NonEmptyString::new("string".to_string()).unwrap();
+        let _string: String = non_empty_string.into();
+
+        let non_empty_string = NonEmptyString::new("string".to_string()).unwrap();
+        let _string = String::from(non_empty_string);
+    }
+
+    #[test]
+    fn hash_works() {
+        let mut map = HashMap::new();
+        map.insert(NonEmptyString::from_str("id.1").unwrap(), 1);
+        map.insert(NonEmptyString::from_str("id.2").unwrap(), 2);
+
+        assert_eq!(map.len(), 2);
+
+        let mut set = HashSet::new();
+        set.insert(NonEmptyString::from_str("1").unwrap());
+        set.insert(NonEmptyString::from_str("2").unwrap());
+
+        assert_eq!(set.len(), 2);
     }
 }
