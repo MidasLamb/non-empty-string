@@ -16,7 +16,7 @@ name = "non_empty_string"
 
 [dependencies]
 serde = { version = "1", optional = true }
-delegate = { version = "0.8" }
+delegate-attr = "0.3.0"
 
 [dev-dependencies]
 assert_matches = "1.5.0"

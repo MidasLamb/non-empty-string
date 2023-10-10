@@ -12,7 +12,7 @@ mod test_readme {
 
 use std::str::FromStr;
 
-use delegate::delegate;
+use delegate_attr::delegate;
 
 #[cfg(feature = "serde")]
 mod serde_support;
@@ -25,7 +25,6 @@ mod trait_impls;
 #[repr(transparent)]
 pub struct NonEmptyString(String);
 
-#[allow(clippy::len_without_is_empty)] // is_empty would always returns false so it seems a bit silly to have it.
 impl NonEmptyString {
     /// Attempts to create a new NonEmptyString.
     /// If the given `string` is empty, `Err` is returned, containing the original `String`, `Ok` otherwise.
@@ -46,77 +45,78 @@ impl NonEmptyString {
     pub fn into_inner(self) -> String {
         self.0
     }
+}
 
-    // These are safe methods that can simply be forwarded.
-    delegate! {
-        to self.0 {
-            /// Is forwarded to the inner String.
-            /// See [`String::into_bytes`]
-            pub fn into_bytes(self) -> Vec<u8>;
+// These are safe methods that can simply be forwarded.
+#[allow(clippy::len_without_is_empty)] // is_empty would always returns false so it seems a bit silly to have it.
+#[delegate(self.0)]
+impl NonEmptyString {
+    /// Is forwarded to the inner String.
+    /// See [`String::into_bytes`]
+    pub fn into_bytes(self) -> Vec<u8> {}
 
-            /// Is forwarded to the inner String.
-            /// See [`String::as_str`]
-            pub fn as_str(&self) -> &str;
+    /// Is forwarded to the inner String.
+    /// See [`String::as_str`]
+    pub fn as_str(&self) -> &str {}
 
-            /// Is forwarded to the inner String.
-            /// See [`String::push_str`]
-            pub fn push_str(&mut self, string: &str);
+    /// Is forwarded to the inner String.
+    /// See [`String::push_str`]
+    pub fn push_str(&mut self, string: &str) {}
 
-            /// Is forwarded to the inner String.
-            /// See [`String::capacity`]
-            pub fn capacity(&self) -> usize;
+    /// Is forwarded to the inner String.
+    /// See [`String::capacity`]
+    pub fn capacity(&self) -> usize {}
 
-            /// Is forwarded to the inner String.
-            /// See [`String::reserve`]
-            pub fn reserve(&mut self, additional: usize);
+    /// Is forwarded to the inner String.
+    /// See [`String::reserve`]
+    pub fn reserve(&mut self, additional: usize) {}
 
-            /// Is forwarded to the inner String.
-            /// See [`String::reserve_exact`]
-            pub fn reserve_exact(&mut self, additional: usize);
+    /// Is forwarded to the inner String.
+    /// See [`String::reserve_exact`]
+    pub fn reserve_exact(&mut self, additional: usize) {}
 
-            // For some reason we cannot delegate the following:
-            // pub fn try_reserve(&mut self, additional: usize) -> Result<(), TryReserveError>
+    // For some reason we cannot delegate the following:
+    // pub fn try_reserve(&mut self, additional: usize) -> Result<(), TryReserveError>
 
-            /// Is forwarded to the inner String.
-            /// See [`String::try_reserve_exact`]
-            pub fn try_reserve_exact(
-                &mut self,
-                additional: usize
-            ) -> Result<(), std::collections::TryReserveError>;
-
-            /// Is forwarded to the inner String.
-            /// See std::string::String::[`(&`]
-            pub fn shrink_to_fit(&mut self);
-
-            /// Is forwarded to the inner String.
-            /// See [`String::shrink_to`]
-            pub fn shrink_to(&mut self, min_capacity: usize);
-
-            /// Is forwarded to the inner String.
-            /// See [`String::push`]
-            pub fn push(&mut self, ch: char);
-
-            /// Is forwarded to the inner String.
-            /// See [`String::as_bytes`]
-            pub fn as_bytes(&self) -> &[u8];
-
-            /// Is forwarded to the inner String.
-            /// See [`String::insert`]
-            pub fn insert(&mut self, idx: usize, ch: char);
-
-            /// Is forwarded to the inner String.
-            /// See [`String::insert_str`]
-            pub fn insert_str(&mut self, idx: usize, string: &str);
-
-            /// Is forwarded to the inner String.
-            /// See [`String::len`]
-            pub fn len(&self) -> usize;
-
-            /// Is forwarded to the inner String.
-            /// See [`String::into_boxed_str`]
-            pub fn into_boxed_str(self) -> Box<str>;
-        }
+    /// Is forwarded to the inner String.
+    /// See [`String::try_reserve_exact`]
+    pub fn try_reserve_exact(
+        &mut self,
+        additional: usize,
+    ) -> Result<(), std::collections::TryReserveError> {
     }
+
+    /// Is forwarded to the inner String.
+    /// See std::string::String::[`(&`]
+    pub fn shrink_to_fit(&mut self) {}
+
+    /// Is forwarded to the inner String.
+    /// See [`String::shrink_to`]
+    pub fn shrink_to(&mut self, min_capacity: usize) {}
+
+    /// Is forwarded to the inner String.
+    /// See [`String::push`]
+    pub fn push(&mut self, ch: char) {}
+
+    /// Is forwarded to the inner String.
+    /// See [`String::as_bytes`]
+    pub fn as_bytes(&self) -> &[u8] {}
+
+    /// Is forwarded to the inner String.
+    /// See [`String::insert`]
+    pub fn insert(&mut self, idx: usize, ch: char) {}
+
+    /// Is forwarded to the inner String.
+    /// See [`String::insert_str`]
+    pub fn insert_str(&mut self, idx: usize, string: &str) {}
+
+    /// Is forwarded to the inner String.
+    /// See [`String::len`]
+    pub fn len(&self) -> usize {}
+
+    /// Is forwarded to the inner String.
+    /// See [`String::into_boxed_str`]
+    pub fn into_boxed_str(self) -> Box<str> {}
 }
 
 impl AsRef<str> for NonEmptyString {
