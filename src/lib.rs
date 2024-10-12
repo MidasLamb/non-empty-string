@@ -36,7 +36,7 @@ impl NonEmptyString {
             Ok(NonEmptyString(string))
         }
     }
-    /// Creates a new `NonEmptyString`, assuming it's not empty.
+    /// Creates a new `NonEmptyString`, assuming `string` is not empty.
     ///
     /// # Safety
     /// If the given `string` is empty, it'll be undefined behavior.
