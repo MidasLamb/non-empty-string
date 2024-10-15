@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.6](https://github.com/MidasLamb/non-empty-string/compare/v0.2.5...v0.2.6) - 2024-10-15
+
+### Other
+
+- Stop clippy from complaining.
+- Formatting and update changelog with 0.2.5
+- Update release-plz.yml
+
 ## [0.2.5](https://github.com/MidasLamb/non-empty-string/compare/v0.2.4...v0.2.5) - 2024-10-15
 
 ### Added
