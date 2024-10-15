@@ -7,15 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.5](https://github.com/MidasLamb/non-empty-string/compare/v0.2.4...v0.2.5) - 2024-10-15
+
+### Added
+
+- `new_unchecked` (Thanks @Rudxain in #17 )
+
 ## [0.2.4](https://github.com/MidasLamb/non-empty-string/compare/v0.2.3...v0.2.4) - 2023-10-03
 
 ### Added
+
 - impl Hash trait
 - impl Into trait
 - FromStr implementation
 - add Deref impl
 
 ### Other
+
 - Add release plz
 - Remove excessive error file
 - Add more traits that `String` also has

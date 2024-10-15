@@ -25,7 +25,10 @@ mod trait_impls;
 #[repr(transparent)]
 pub struct NonEmptyString(String);
 
-#[allow(clippy::len_without_is_empty, reason = "is_empty would always returns false so it seems a bit silly to have it.")]
+#[allow(
+    clippy::len_without_is_empty,
+    reason = "is_empty would always returns false so it seems a bit silly to have it."
+)]
 impl NonEmptyString {
     /// Attempts to create a new `NonEmptyString`.
     /// If the given `string` is empty, `Err` is returned, containing the original `String`, `Ok` otherwise.
