@@ -26,3 +26,9 @@ serde = { version = "1", features = ["derive"] }
 [features]
 default = []
 serde = ["dep:serde"]
+
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = [
+    'cfg(no_global_oom_handling)', # Stop cargo clippy from complaining about this cfg that is copied from the std.
+] }
