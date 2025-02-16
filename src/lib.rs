@@ -17,6 +17,9 @@ use delegate::delegate;
 #[cfg(feature = "serde")]
 mod serde_support;
 
+#[cfg(feature = "macro")]
+mod macros;
+
 mod trait_impls;
 
 /// A simple String wrapper type, similar to NonZeroUsize and friends.

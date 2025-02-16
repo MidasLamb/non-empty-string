@@ -25,6 +25,7 @@ serde = { version = "1", features = ["derive"] }
 
 [features]
 default = []
+macro = []
 serde = ["dep:serde"]
 
 
