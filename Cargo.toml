@@ -1,11 +1,11 @@
 [package]
-name = "non-empty-string"
-version = "0.2.5"
+name = "patskovn-non-empty-string"
+version = "0.2.6"
 edition = "2021"
-authors = ["Midas Lambrichts <midaslamb@gmail.com>"]
+authors = ["Midas Lambrichts <midaslamb@gmail.com>", "Nikita Patskov <patskovn@gmail.com>"]
 license = "MIT OR Apache-2.0"
 description = "A simple type for non empty Strings, similar to NonZeroUsize and friends."
-repository = "https://github.com/MidasLamb/non-empty-string"
+repository = "https://github.com/patskovn/non-empty-string.git"
 keywords = ["nonemptystring", "string", "str", "non-empty", "nonempty"]
 
 [package.metadata."docs.rs"]
