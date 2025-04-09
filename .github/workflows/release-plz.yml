@@ -5,6 +5,9 @@ on:
     branches:
       - master
 
+env:
+  RELEASE_PLZ_VERSION: "0.3.130"
+
 jobs:
   release-plz-pr:
     permissions:
@@ -28,7 +31,59 @@ jobs:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
 
   # Release unpublished packages.
+  release-plz-release-check:
+    name: Release-plz release check
+    runs-on: ubuntu-latest
+    outputs:
+      releases: ${{ steps.release-plz.outputs.releases }}
+      releases_created: ${{ steps.release-plz.outputs.releases_created }}
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install binaries
+        uses: taiki-e/install-action@v2
+        with:
+          tool: release-plz@${{env.RELEASE_PLZ_VERSION}}
+      - name: Run release-plz
+        id: release-plz
+        shell: bash
+        # Modified from https://github.com/release-plz/action/blob/main/action.yml
+        run: |
+          release_output=$(release-plz release\
+              --git-token "${GITHUB_TOKEN}"\
+              --dry-run\
+              -o json)
+          echo "release_output: $release_output"
+          releases=$(echo $release_output | jq -c .releases)
+          echo "releases=$releases" >> "$GITHUB_OUTPUT"
+          releases_length=$(echo "$releases" | jq 'length')
+          if [ "$releases_length" != "0" ]; then
+              releases_created=true
+          else
+              releases_created=false
+          fi
+          echo "releases_created=$releases_created" >> "$GITHUB_OUTPUT"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+      - name: Read release output
+        env:
+          RELEASES: ${{ steps.release-plz.outputs.releases }}
+          RELEASES_CREATED: ${{ steps.release-plz.outputs.releases_created }}
+        run: |
+          set -e
+          echo "releases: $RELEASES"
+          echo "releases_created: $RELEASES_CREATED" # example: true
+
   release-plz-release:
+    needs: ["release-plz-release-check"]
+    if: needs.release-plz-release-check.outputs.releases_created == 'true'
     name: Release-plz release
     environment: "crates.io"
     runs-on: ubuntu-latest
@@ -45,6 +100,7 @@ jobs:
         uses: release-plz/action@v0.5
         with:
           command: release
+          version: ${{env.RELEASE_PLZ_VERSION}}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
