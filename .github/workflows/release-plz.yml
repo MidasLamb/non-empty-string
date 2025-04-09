@@ -5,6 +5,9 @@ on:
     branches:
       - master
 
+env:
+  RELEASE_PLZ_VERSION: "0.3.130"
+
 jobs:
   release-plz-pr:
     permissions:
@@ -43,11 +46,32 @@ jobs:
           fetch-depth: 0
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
+      - name: Install binaries
+        uses: taiki-e/install-action@v2
+        with:
+          tool: release-plz@${{env.RELEASE_PLZ_VERSION}}
       - name: Run release-plz
         id: release-plz
-        uses: release-plz/action@v0.5
-        with:
-          command: release --dry-run
+        shell: bash
+        # Modified from https://github.com/release-plz/action/blob/main/action.yml
+        run: |
+          release_output=$(release-plz release\
+              --git-token "${GITHUB_TOKEN}"\
+              --dry-run\
+              -o json)
+          echo "release_pr_output: $release_pr_output"
+          prs=$(echo $release_pr_output | jq -c .prs)
+          echo "prs=$prs" >> "$GITHUB_OUTPUT"
+          prs_length=$(echo "$prs" | jq 'length')
+          if [ "$prs_length" != "0" ]; then
+              prs_created=true
+              first_pr=$(echo $prs | jq -c .[0])
+          else
+              prs_created=false
+              first_pr="{}"
+          fi
+          echo "pr=$first_pr" >> "$GITHUB_OUTPUT"
+          echo "prs_created=$prs_created" >> "$GITHUB_OUTPUT"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
@@ -79,6 +103,7 @@ jobs:
         uses: release-plz/action@v0.5
         with:
           command: release
+          version: ${{env.RELEASE_PLZ_VERSION}}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
