@@ -83,7 +83,7 @@ jobs:
 
   release-plz-release:
     needs: ["release-plz-release-check"]
-    if: needs.release-plz-release-check.outputs.releases_created
+    if: needs.release-plz-release-check.outputs.releases_created == 'true'
     name: Release-plz release
     environment: "crates.io"
     runs-on: ubuntu-latest
