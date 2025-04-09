@@ -83,3 +83,14 @@ jobs:
         uses: actions/checkout@v4
       - name: Check semver
         uses: obi1kenobi/cargo-semver-checks-action@v2
+
+  msvr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-binstall
+      - run: cargo binstall --version 0.18.4 --no-confirm cargo-msrv
+      - run: cargo msrv verify

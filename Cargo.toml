@@ -7,6 +7,7 @@ license = "MIT OR Apache-2.0"
 description = "A simple type for non empty Strings, similar to NonZeroUsize and friends."
 repository = "https://github.com/MidasLamb/non-empty-string"
 keywords = ["nonemptystring", "string", "str", "non-empty", "nonempty"]
+rust-version = "1.81.0"
 
 [package.metadata."docs.rs"]
 all-features = true
