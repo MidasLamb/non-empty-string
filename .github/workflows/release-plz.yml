@@ -28,7 +28,41 @@ jobs:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
 
   # Release unpublished packages.
+  release-plz-release-check:
+    name: Release-plz release check
+    runs-on: ubuntu-latest
+    outputs:
+      releases: ${{ steps.release-plz.outputs.releases }}
+      releases_created: ${{ steps.release-plz.outputs.releases_created }}
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+      - name: Run release-plz
+        id: release-plz
+        uses: release-plz/action@v0.5
+        with:
+          command: release --dry-run
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+      - name: Read release output
+        env:
+          RELEASES: ${{ steps.release-plz.outputs.releases }}
+          RELEASES_CREATED: ${{ steps.release-plz.outputs.releases_created }}
+        run: |
+          set -e
+          echo "releases: $RELEASES"
+          echo "releases_created: $RELEASES_CREATED" # example: true
+
   release-plz-release:
+    needs: ["release-plz-release-check"]
+    if: needs.release-plz-release-check.outputs.releases_created
     name: Release-plz release
     environment: "crates.io"
     runs-on: ubuntu-latest
