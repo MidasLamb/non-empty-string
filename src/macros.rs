@@ -7,9 +7,9 @@
 /// # Examples
 ///
 /// ```
-/// use non_empty_string::{non_empty, NonEmptyString};
+/// use non_empty_string::{non_empty_string, NonEmptyString};
 ///
-/// let s: NonEmptyString = non_empty!("Hello, Rust!");
+/// let s: NonEmptyString = non_empty_string!("Hello, Rust!");
 /// assert_eq!(s, NonEmptyString::new("Hello, Rust!".to_string()).unwrap());
 /// ```
 ///
@@ -18,27 +18,40 @@
 /// If an empty string is provided, this macro will cause a **compile-time error**.
 ///
 /// ```compile_fail
-/// use non_empty_string::non_empty;
+/// use non_empty_string::non_empty_string;
 ///
-/// let s = non_empty!("");
+/// let s = non_empty_string!("");
 /// ```
-macro_rules! non_empty {
+macro_rules! non_empty_string {
     ($s:expr) => {{
         // Compile-time assertion to ensure the string is non-empty
         const _: () = assert!(!$s.is_empty(), "String cannot be empty");
 
         // Create a NonEmptyString, unsafely wrapping since we've checked it's valid
-        unsafe { NonEmptyString::new_unchecked($s.to_string()) }
+        unsafe { $crate::NonEmptyString::new_unchecked($s.to_string()) }
     }};
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::NonEmptyString;
+    // We explicitely DO NOT do `use crate::NonEmptyString` or anything of the sorts to ensure the macro has proper hygiene.
+    // Otherwise tests might pass, but if a user does `non_empty_string::non_empty_string!("A")`, they might get compilation
+    // errors that `NonEmptyString` is not in scope.
+
+    const NON_EMPTY_STRING: &'static str = "non-empty-string";
 
     #[test]
-    fn test_non_empty_string_macro_valid() {
-        let s = non_empty!("Test String");
-        assert_eq!(s, NonEmptyString::try_from("Test String").unwrap());
+    fn test_const_non_empty_string_macro_valid() {
+        let s = non_empty_string!(NON_EMPTY_STRING);
+        assert_eq!(
+            s,
+            crate::NonEmptyString::try_from(NON_EMPTY_STRING).unwrap()
+        );
+    }
+
+    #[test]
+    fn test_inline_non_empty_string_macro_valid() {
+        let s = non_empty_string!("Test String");
+        assert_eq!(s, crate::NonEmptyString::try_from("Test String").unwrap());
     }
 }

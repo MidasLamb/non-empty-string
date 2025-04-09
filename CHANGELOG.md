@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.6](https://github.com/MidasLamb/non-empty-string/compare/v0.2.5...v0.2.6) - 2025-04-09
+
+### Added
+
+- `non_empty_string!()` macro to create a `NonEmptyString` at compile time , thanks @patskovn in #19 (requires `macros` feature flag)
+
 ## [0.2.5](https://github.com/MidasLamb/non-empty-string/compare/v0.2.4...v0.2.5) - 2024-10-15
 
 ### Added

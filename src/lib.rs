@@ -17,7 +17,7 @@ use delegate::delegate;
 #[cfg(feature = "serde")]
 mod serde_support;
 
-#[cfg(feature = "macro")]
+#[cfg(feature = "macros")]
 mod macros;
 
 mod trait_impls;
