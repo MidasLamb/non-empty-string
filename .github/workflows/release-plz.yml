@@ -59,19 +59,16 @@ jobs:
               --git-token "${GITHUB_TOKEN}"\
               --dry-run\
               -o json)
-          echo "release_pr_output: $release_pr_output"
-          prs=$(echo $release_pr_output | jq -c .prs)
-          echo "prs=$prs" >> "$GITHUB_OUTPUT"
-          prs_length=$(echo "$prs" | jq 'length')
-          if [ "$prs_length" != "0" ]; then
-              prs_created=true
-              first_pr=$(echo $prs | jq -c .[0])
+          echo "release_output: $release_output"
+          releases=$(echo $release_output | jq -c .releases)
+          echo "releases=$releases" >> "$GITHUB_OUTPUT"
+          releases_length=$(echo "$releases" | jq 'length')
+          if [ "$releases_length" != "0" ]; then
+              releases_created=true
           else
-              prs_created=false
-              first_pr="{}"
+              releases_created=false
           fi
-          echo "pr=$first_pr" >> "$GITHUB_OUTPUT"
-          echo "prs_created=$prs_created" >> "$GITHUB_OUTPUT"
+          echo "releases_created=$releases_created" >> "$GITHUB_OUTPUT"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
