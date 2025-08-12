@@ -18,6 +18,7 @@ name = "non_empty_string"
 [dependencies]
 serde = { version = "1", optional = true }
 delegate = { version = "0.8" }
+schemars = { version = "1", optional = true }
 
 [dev-dependencies]
 assert_matches = "1.5.0"
@@ -28,6 +29,7 @@ serde = { version = "1", features = ["derive"] }
 default = []
 macros = []
 serde = ["dep:serde"]
+schemars = ["dep:schemars"]
 
 
 [lints.rust]
