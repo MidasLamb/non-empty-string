@@ -19,6 +19,8 @@ mod serde_support;
 
 #[cfg(feature = "macros")]
 mod macros;
+#[cfg(feature = "schemars09")]
+mod schemars_support;
 
 mod trait_impls;
 
