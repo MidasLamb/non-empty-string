@@ -34,7 +34,7 @@ macro_rules! non_empty_string {
 
 #[cfg(test)]
 mod tests {
-    // We explicitely DO NOT do `use crate::NonEmptyString` or anything of the sorts to ensure the macro has proper hygiene.
+    // We explicitly DO NOT do `use crate::NonEmptyString` or anything of the sorts to ensure the macro has proper hygiene.
     // Otherwise tests might pass, but if a user does `non_empty_string::non_empty_string!("A")`, they might get compilation
     // errors that `NonEmptyString` is not in scope.
 
