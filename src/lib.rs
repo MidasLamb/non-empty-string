@@ -35,7 +35,7 @@ pub struct NonEmptyString(String);
 impl NonEmptyString {
     /// Attempts to create a new `NonEmptyString`.
     /// If the given `string` is empty, `Err` is returned, containing the original `String`, `Ok` otherwise.
-    pub fn new(string: String) -> Result<Self, String> {
+    pub const fn new(string: String) -> Result<Self, String> {
         if string.is_empty() {
             Err(string)
         } else {
