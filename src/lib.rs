@@ -98,7 +98,7 @@ impl NonEmptyString {
             ) -> Result<(), std::collections::TryReserveError>;
 
             /// Is forwarded to the inner String.
-            /// See std::string::String::[`(&`]
+            /// See [`String::shrink_to_fit`]
             pub fn shrink_to_fit(&mut self);
 
             /// Is forwarded to the inner String.
