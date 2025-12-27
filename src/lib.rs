@@ -87,8 +87,12 @@ impl NonEmptyString {
             /// See [`String::reserve_exact`]
             pub fn reserve_exact(&mut self, additional: usize);
 
-            // For some reason we cannot delegate the following:
-            // pub fn try_reserve(&mut self, additional: usize) -> Result<(), TryReserveError>
+            /// Is forwarded to the inner String.
+            /// See [`String::try_reserve`]
+            pub fn try_reserve(
+                &mut self,
+                additional: usize
+            ) -> Result<(), std::collections::TryReserveError>;
 
             /// Is forwarded to the inner String.
             /// See [`String::try_reserve_exact`]
