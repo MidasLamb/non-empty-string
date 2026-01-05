@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.7](https://github.com/MidasLamb/non-empty-string/compare/v0.2.6...v0.2.7) - 2026-01-05
+
+### Other
+
+- Bump msrv
+- Merge pull request #27 from cgzones/const
+- Merge pull request #29 from cgzones/try_reserve
+- fix comment to link to actual method
+- Merge pull request #31 from MidasLamb/dependabot/github_actions/actions/checkout-6
+- Merge pull request #26 from cgzones/typo
+- Bump delegate dependency
+- Add msrv check
+- *(deps)* bump actions/checkout from 2 to 4
+- Use release-plz to check if we want to release
+
 ## [0.2.6](https://github.com/MidasLamb/non-empty-string/compare/v0.2.5...v0.2.6) - 2025-04-09
 
 ### Added
