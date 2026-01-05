@@ -10,7 +10,8 @@ mod test_readme {
     mod something {}
 }
 
-use std::str::FromStr;
+use core::num::NonZero;
+use core::str::FromStr;
 
 use delegate::delegate;
 
@@ -77,7 +78,9 @@ impl NonEmptyString {
 
             /// Is forwarded to the inner String.
             /// See [`String::capacity`]
-            pub fn capacity(&self) -> usize;
+            #[try_into]
+            #[unwrap]
+            pub fn capacity(&self) -> NonZero<usize>;
 
             /// Is forwarded to the inner String.
             /// See [`String::reserve`]
@@ -124,7 +127,9 @@ impl NonEmptyString {
 
             /// Is forwarded to the inner String.
             /// See [`String::len`]
-            pub fn len(&self) -> usize;
+            #[try_into]
+            #[unwrap]
+            pub fn len(&self) -> NonZero<usize>;
 
             /// Is forwarded to the inner String.
             /// See [`String::into_boxed_str`]
@@ -223,7 +228,8 @@ mod tests {
     fn calling_string_methods_works() {
         let nes = NonEmptyString::new("string".to_owned()).unwrap();
         // `len` is a `String` method.
-        assert!(nes.len() > 0);
+        assert_eq!(nes.len(), NonZero::new(6).unwrap());
+        assert!(nes.capacity() >= NonZero::new(6).unwrap());
     }
 
     #[test]
