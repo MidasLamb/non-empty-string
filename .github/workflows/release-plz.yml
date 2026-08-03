@@ -47,7 +47,7 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
       - name: Install binaries
-        uses: taiki-e/install-action@v2
+        uses: taiki-e/install-action@v2.85.5
         with:
           tool: release-plz@${{env.RELEASE_PLZ_VERSION}}
       - name: Run release-plz
